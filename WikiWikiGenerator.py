@@ -36,7 +36,7 @@ while True:
 		'language': data['general']['lang'],
 		'articles': data['statistics']['articles'],
 		'founded': dw['created_at'],
-		'founder': requests.get('https://community.fandom.com/api.php?format=json&action=query&list=users&ususerids=' + dw['founding_user_id']).json()['query']['users'][0]['name'],
+		'founder': dw['founding_user_id'] != '0' and requests.get('https://community.fandom.com/api.php?format=json&action=query&list=users&ususerids=' + dw['founding_user_id']).json()['query']['users'][0]['name'] or None,
 		'adopted': None,
 		'adopter': None,
 		'id': cityId,
