@@ -2,16 +2,17 @@ import requests
 import re
 from datetime import date
 
+# https://c.fandom.com/wiki/Special:AllMessages?prefix=cnw-vertical-id-
 verticalToHub = {
-	0: 8, # Other
-	1: 2, # TV
-	2: 6, # Games
-	3: 5, # Books
-	4: 1, # Comics
-	5: 7, # Lifestyle
-	6: 4, # Music
-	7: 3, # Movies
-	8: 9, # Anime
+	0: 'other',
+	1: 'tv',
+	2: 'games',
+	3: 'books',
+	4: 'comics',
+	5: 'lifestyle',
+	6: 'music',
+	7: 'movies',
+	8: 'anime'
 }
 
 while True:
