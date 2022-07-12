@@ -34,6 +34,7 @@ while True:
 		'name': data['general']['sitename'],
 		'URL': (lang and f'{lang}.' or '') + data['general']['servername'].split('.')[0], # community.fandom.com
 		'dbname': data['general']['logo'].split('/')[3], # https://images.wikia.com/central/images/b/bc/Wiki.png
+		'path-prefix': data['general']['logo'].split('/')[4] if data['general']['logo'].split('/')[4] != 'images' else None, # non-en wikis like https://images.wikia.com/amongus/es/images/b/bc/Wiki.png
 		'language': data['general']['lang'],
 		'articles': data['statistics']['articles'],
 		'founded': dw['created_at'],
