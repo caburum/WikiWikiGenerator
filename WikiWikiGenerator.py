@@ -32,6 +32,7 @@ while True:
 
 	infobox = {
 		'name': data['general']['sitename'],
+		'badge': [],
 		'URL': (lang and f'{lang}.' or '') + data['general']['servername'].split('.')[0], # community.fandom.com
 		'dbname': data['general']['logo'].split('/')[3], # https://images.wikia.com/central/images/b/bc/Wiki.png
 		'path-prefix': data['general']['logo'].split('/')[4] if data['general']['logo'].split('/')[4] != 'images' else None, # non-en wikis like https://images.wikia.com/amongus/es/images/b/bc/Wiki.png
@@ -45,6 +46,14 @@ while True:
 		'hub': verticalToHub[int(dw['vertical_id'])],
 		'checked': date.today().strftime("%Y-%m-%d")
 	}
+
+	if data['general']['gamepedia'] == 'true':
+		infobox['badge'].append('gamepedia')
+
+	cnw = requests.get('https://community.fandom.com/wikia.php?controller=Fandom\CreateNewWiki\Builder\CreateNewWiki&method=checkDomain&format=json&name=%s&lang=%s' % (data['general']['servername'].split('.')[0], infobox['language'])).json()
+	if cnw['potential_duplicates'][0]['wikiOfficial'] == True:
+		infobox['badge'].append('official')
+
 
 	adoptionInfo = {
 		# lang: [wiki, lang, namespace]
@@ -61,7 +70,7 @@ while True:
 	}
 
 	adopt = adoptionInfo[next((k for k in adoptionInfo.keys() if k.startswith(infobox['language'].split('-')[0])), 'en')]
-	
+
 	for attempt in requests.get(f'https://{adopt[0]}.fandom.com/{adopt[1]}/api.php?format=json&action=query&list=allpages&apdir=descending&apnamespace={adopt[2]}&apprefix=' + (adopt == adoptionInfo['en'] and infobox['name'] or infobox['name'].replace('Wiki', ''))).json()['query']['allpages']: # non-en requests seem to not have wiki in the name?
 		req = requests.get(f'https://{adopt[0]}.fandom.com/{adopt[1]}/api.php?format=json&formatversion=2&action=query&prop=revisions&rvlimit=1&rvprop=content|user&rvdir=newer&titles=' + attempt['title']).json()['query']['pages'][0]['revisions'][0]
 		if re.search('https?:\/\/' + (lang and f"(({lang}|{infobox['language']})\.)?" or '') + data['general']['servername'].split('.')[0] + '\.(fandom|wikia)\.(com|org)' + (lang and f"(\/({lang}|{infobox['language']}))?" or ''), req['content']): # this wiki was mentioned
@@ -81,6 +90,8 @@ while True:
 	template = '{{Infobox wiki\n'
 	for key, value in infobox.items():
 		if value != None:
+			if type(value) is list:
+				value = ','.join(value)
 			template += f'|{key} = {value}\n'
 	template += '}}'
 
