@@ -89,7 +89,7 @@ while True:
 
 	template = '{{Infobox wiki\n'
 	for key, value in infobox.items():
-		if value != None:
+		if value:
 			if type(value) is list:
 				value = ','.join(value)
 			template += f'|{key} = {value}\n'
